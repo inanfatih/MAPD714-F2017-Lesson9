@@ -21,6 +21,8 @@ class RootViewController: UITableViewController {
         let preferredTableViewFont =
             UIFont.preferredFont(forTextStyle: UIFontTextStyle.headline)
         cellPointSize = preferredTableViewFont.pointSize
+        favouritesList = FavouritesList.sharedFavourites
+        tableView.estimatedRowHeight = cellPointSize
     
     }
     
@@ -34,5 +36,29 @@ class RootViewController: UITableViewController {
         
     }
 
+    override func numberOfSections(in tableView: UITableView) -> Int {
+        return favouritesList.favourites.isEmpty ? 1 : 2
+    }
     
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return section == 0 ? familyNames.count : 1
+    }
+    
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return section == 0 ? "All font families" : "My favourite font"
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: RootViewController.familyCell, for: indexPath)
+            cell.textLabel?.font = fontForDipslay(atIndexPath: indexPath as NSIndexPath)
+            cell.textLabel?.text = familyNames[indexPath.row]
+            cell.detailTextLabel?.text = familyNames[indexPath.row]
+            return cell
+        }
+        else {
+            return tableView.dequeueReusableCell(withIdentifier:RootViewController.favouritesCell, for:indexPath)
+        
+        }
+    }
 }
